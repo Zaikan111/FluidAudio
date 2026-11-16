@@ -36,16 +36,21 @@ public actor PocketTtsManager {
     ///     matching upstream's on-disk weight format). `.int8` swaps
     ///     `flowlm_step` for the upstream `flowlm_stepv2` int8-quantized
     ///     variant per kyutai-labs/pocket-tts#147.
+    ///   - computeUnits: Per-stage compute-unit overrides. `.default` keeps
+    ///     this version's routing; `.avoidNeuralEngine` keeps every stage
+    ///     off the ANE on hardware where it rejects or distorts a stage.
     public init(
         defaultVoice: String = PocketTtsConstants.defaultVoice,
         language: PocketTtsLanguage = .english,
         directory: URL? = nil,
-        precision: PocketTtsPrecision = .fp16
+        precision: PocketTtsPrecision = .fp16,
+        computeUnits: PocketTtsComputeUnits = .default
     ) {
         self.modelStore = PocketTtsModelStore(
             language: language,
             directory: directory,
-            precision: precision
+            precision: precision,
+            computeUnits: computeUnits
         )
         self.defaultVoice = defaultVoice
         self.language = language
